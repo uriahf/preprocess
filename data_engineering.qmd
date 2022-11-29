@@ -1,0 +1,336 @@
+---
+title: "Data Pre-Processing 🔧"
+subtitle: "Or Things You Need to Do Before Modelling"
+author: "Uriah Finkel"
+format:
+  revealjs:
+    theme: sky
+    incremental: true 
+---
+
+## Agenda
+
+-   Why Data Pre-Processing is important for Data Science?
+
+-   Show some of the Pre-Processing workflow of a Data Scientist
+
+# Why Pre-Processing? 🤔
+
+## What most people think we do:
+
+![](robot_ai.jpg){fig-align="center"}
+
+## What we think we do:
+
+![](plumber_data2.jpg){fig-align="center" width="636"}
+
+## We Need Both
+
+::: columns
+::: {.column width="50%"}
+### 🤖
+
+-   Automation of Human Knowledge.
+
+-   Leveraging Huge Computation Capabilities.
+
+-   It Sounds Cool!
+:::
+
+::: {.column width="50%"}
+### 👨‍🔧
+
+-   We translate Data to Numbers.
+
+-   Leveraging Domain Knowledge.
+
+-   Doesn't sound as cool.
+
+:::
+:::
+
+## World Cup 2022 ⚽
+
+#### Robots are Extremly Accurate 🤖
+
+::: columns
+::: {.column width="50%"}
+![](offside_1.PNG)
+:::
+
+::: {.column width="50%"}
+![](offside_2.PNG)
+:::
+:::
+
+## World Cup 2022 ⚽
+
+#### Without a good plumber accuracy is irrelevant 👨‍🔧
+
+![](offside_3.PNG){fig-align="center"}
+
+## Typical Workflow
+
+Pre-Processing is a part of iterative workflow
+
+::: columns
+::: {.column width="50%"}
+
+-   Import: *Import* data from external sources.
+
+-   Tidy: Make the data *Tidy* and ready for analysis.
+
+-   Transform: *Transform* the raw data.
+
+-   Visualize: *Visualize* the data.
+:::
+
+::: {.column width="50%"}
+![](data-science-workflow.png)
+:::
+:::
+
+## Typical Workflow
+
+```{r}
+options(knitr.kable.NA = '')
+
+data_before_processing <- tibble::tibble(
+  id = 1:6,
+  city = c("Haifa", "Nahariah", "Tel Aviv", "Beer-Sheva", "Jerusalem", "Tel Aviv"),
+  smoker = c("No", "No", "Yes", "No", "No", "Yes"),
+  age = c(28, 31, 42, 39, 30, 33),
+  weight = c(77, 80, 83, 70, 76, NA),
+  height = c(1.88, 1.6, 1.68, 1.73, 1.78, NA),
+  immigrated = c(NA, NA, "02/03/1980", NA, NA, NA),
+  pob = c("ET", "IL", "IL", "YE", "IL", "YE"),
+  cost = c(118, 35, 140, 43, 59, 38)
+)
+```
+
+# Import Data 📦
+
+## Combine Data from Different Resources
+
+::: columns
+::: {.column width="50%"}
+We have one table that includes the ID number, the Age and the Place of Birth of each patient.
+:::
+
+::: {.column width="50%"}
+```{r}
+
+data_before_processing |> 
+  dplyr::select(
+    id, age, pob
+  ) |> 
+  knitr::kable()
+
+```
+:::
+:::
+
+## Combine Data from Different Resources
+
+::: columns
+::: {.column width="50%"}
+We have one table that includes the ID number, the age and the Place of Birth of each patient, and we have a another table that includes the cost of each individual patient.
+:::
+
+::: {.column width="50%"}
+```{r}
+
+data_before_processing |> 
+  dplyr::select(
+    id, cost
+  )|> 
+  knitr::kable()
+
+```
+:::
+:::
+
+## Combine Data from Different Resources {.smaller}
+
+In order to make one tidy data we need a key 🔑 to the value. The value will be the ID Column (Teudat Zehut).
+
+::: columns
+::: {.column width="50%"}
+```{r}
+
+data_before_processing |> 
+  dplyr::select(
+    id, age, pob
+  ) |> 
+  knitr::kable()
+
+```
+:::
+
+::: {.column width="50%"}
+```{r}
+
+data_before_processing |> 
+  dplyr::select(
+    id, cost
+  )|> 
+  knitr::kable()
+
+```
+:::
+:::
+
+## Combine Data from Different Resources {.smaller}
+
+::: columns
+::: {.column width="50%"}
+-   Import: *Import* data from external sources.
+
+-   Tidy: Make the data *Tidy* and ready for analysis.
+
+-   Transform: *Transform* the raw data.
+
+-   Visualize: *Visualize* the data.
+:::
+
+::: {.column width="50%"}
+![](data-science-workflow.png)
+:::
+:::
+
+## One Table to Work On {.smaller}
+
+```{r}
+
+knitr::kable(data_before_processing)
+
+```
+
+# Tidy 🧹
+
+## Long Format to Wide Format
+
+![](tidy_data.png)
+
+-   Each Variable is a Column
+-   Each Observation is a Raw
+-   Each Value is in a Different Cell
+
+# Transform 🐛➡🦋
+
+## Missing Values
+
+## Encoding Categorical Variables
+
+# Visualize 👀
+
+## Types of Variables {.smaller}
+
+::: columns
+::: {.column width="50%"}
+
+#### **Binary Variables 👍👎** 
+
+"Yes" or "No". Encoded (mostly) as 1 for Yes and 0 for No.
+
+Current Smoker: 🚬 🚭
+
+#### **Categorical Variables** 
+
+Place of Birth: {{< iconify flag il-4x3 >}} {{< iconify flag ye-4x3 >}} {{< iconify flag et-4x3 >}}
+
+#### **Continuous Variables** 
+
+Age: 👧 👩 👵
+
+:::
+
+::: {.column width="50%"}
+
+```{r}
+data_before_processing |> 
+  dplyr::select(
+    smoker, pob, age
+  ) |> 
+  knitr::kable()
+```
+
+
+:::
+:::
+
+## Summary Tables (Table 1)
+
+## Plots
+
+# Basic Exploration 🔦
+
+## Summary Tables (Table 1)
+
+```{r}
+
+data_before_processing |>
+  gtsummary::tbl_summary(
+    type = list(
+      id ~ "continuous",
+      city ~ "categorical",
+      weight ~ "continuous",
+      height ~ "continuous",
+      age ~ "continuous",
+      cost ~ "continuous",
+      smoker ~ "dichotomous")
+  ) #|>
+  # gtsummary::as_tibble(
+  # )
+
+```
+
+## 1D Vizualization
+
+::: panel-tabset
+### Continuous - Histogram
+
+```{r}
+library(ggplot2)
+
+ggplot(
+  data_before_processing,
+  aes(x = age)
+) +
+  geom_histogram() +
+  theme_classic()
+
+```
+
+### Discrete - Histogram
+
+```{r}
+library(ggplot2)
+
+ggplot(
+  data_before_processing,
+  aes(x = city)
+) +
+  geom_histogram(stat="count") +
+  theme_classic()
+
+```
+:::
+
+## 2D Vizualization
+
+### Continuous and Continuous - Scatter
+
+```{r}
+library(ggplot2)
+
+ggplot(
+  data_before_processing,
+  aes(x = height, y = weight)
+) +
+  geom_point() +
+  theme_classic()
+
+```
+
+## Encoding Categorical Variables
