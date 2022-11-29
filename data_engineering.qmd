@@ -45,9 +45,16 @@ format:
 -   Leveraging Domain Knowledge.
 
 -   Doesn't sound as cool.
+:::
+:::
 
-:::
-:::
+## World Cup 2022 ⚽
+
+{{< iconify flag ar-4x3 >}} Argentina 1
+
+{{< iconify flag sa-4x3 >}} Saudi Arabia 2
+
+![](messi.jpg){fig-align="center"}
 
 ## World Cup 2022 ⚽
 
@@ -69,26 +76,17 @@ format:
 
 ![](offside_3.PNG){fig-align="center"}
 
-## Typical Workflow
+## Typical Data Science Workflow
+
+![](data-science-workflow.png)
 
 Pre-Processing is a part of iterative workflow
 
-::: columns
-::: {.column width="50%"}
+-   **Tidy:** Make the data ***Tidy*** and ready for analysis 🧹
 
--   Import: *Import* data from external sources.
+-   **Transform:** ***Transform*** the raw data 🐛➡🦋
 
--   Tidy: Make the data *Tidy* and ready for analysis.
-
--   Transform: *Transform* the raw data.
-
--   Visualize: *Visualize* the data.
-:::
-
-::: {.column width="50%"}
-![](data-science-workflow.png)
-:::
-:::
+-   **Visualize:** ***Visualize*** the data 👀
 
 ## Typical Workflow
 
@@ -108,7 +106,129 @@ data_before_processing <- tibble::tibble(
 )
 ```
 
-# Import Data 📦
+# Tidy 🧹
+
+## What is Tidy Data 🧹 {.smaller}
+
+> Tidy data is a standard way of mapping the meaning of a dataset to its structure. A dataset is messy or tidy depending on how rows, columns and tables are matched up with observations, variables and types.
+
+::: columns
+::: {.column width="50%"}
+:::
+
+::: {.column width="50%"}
+```{r}
+tidy_table <- data_before_processing |> 
+  dplyr::select(id, age, smoker, cost) |> 
+  gt::gt() 
+
+tidy_table 
+```
+:::
+:::
+
+## What is Tidy Data 🧹 {.smaller}
+
+> Tidy data is a standard way of mapping the meaning of a dataset to its structure. A dataset is messy or tidy depending on how rows, columns and tables are matched up with observations, variables and types.
+
+::: columns
+::: {.column width="50%"}
+Each [**Variable**]{style="background-color: #F3B9CD"} is a [**Column**]{style="background-color: #F3B9CD"}
+:::
+
+::: {.column width="50%"}
+```{r}
+
+tidy_table |> 
+  gt::tab_style(
+    style = gt::cell_fill(color = "#F3B9CD"),
+    locations = gt::cells_body(
+      columns = age
+    )
+  )
+```
+:::
+:::
+
+## What is Tidy Data 🧹 {.smaller}
+
+> Tidy data is a standard way of mapping the meaning of a dataset to its structure. A dataset is messy or tidy depending on how rows, columns and tables are matched up with observations, variables and types.
+
+::: columns
+::: {.column width="50%"}
+Each [**Variable**]{style="background-color: #F3B9CD"} is a [**Column**]{style="background-color: #F3B9CD"}
+
+Each [**Observation**]{style="background-color: #EDCAAB"} is a [**Row**]{style="background-color: #EDCAAB"}
+:::
+
+::: {.column width="50%"}
+```{r}
+
+tidy_table |> 
+  gt::tab_style(
+    style = gt::cell_fill(color = "#F3B9CD"),
+    locations = gt::cells_body(
+      columns = age
+    )
+  ) |> 
+  gt::tab_style(
+    style = gt::cell_fill(color = "#EDCAAB"),
+    locations = gt::cells_body(rows = 2)
+  )
+
+```
+:::
+:::
+
+## What is Tidy Data 🧹 {.smaller}
+
+> Tidy data is a standard way of mapping the meaning of a dataset to its structure. A dataset is messy or tidy depending on how rows, columns and tables are matched up with observations, variables and types.
+
+::: columns
+::: {.column width="50%"}
+Each [**Variable**]{style="background-color: #F3B9CD"} is a [**Column**]{style="background-color: #F3B9CD"}
+
+Each [**Observation**]{style="background-color: #EDCAAB"} is a [**Row**]{style="background-color: #EDCAAB"}
+
+Each [**Value**]{style="background-color: #EEFFC2"} is in a [**Different Cell**]{style="background-color: #EEFFC2"}
+:::
+
+::: {.column width="50%"}
+```{r}
+
+tidy_table |> 
+  gt::tab_style(
+    style = gt::cell_fill(color = "#F3B9CD"),
+    locations = gt::cells_body(
+      columns = age
+    )
+  ) |> 
+  gt::tab_style(
+    style = gt::cell_fill(color = "#EDCAAB"),
+    locations = gt::cells_body(rows = 2)
+  ) |> 
+  gt::tab_style(
+    style = gt::cell_fill(color = "#EEFFC2"),
+    locations = gt::cells_body(
+      rows = 2, 
+      columns = age)
+  )
+
+```
+:::
+:::
+
+------------------------------------------------------------------------
+
+![](tidy_data_1.jpg)
+
+[©TIDY DATA SERIES BY LOWNDES & HORST By Julia Lowndes and Allison Horst.](https://allisonhorst.com/other-r-fun)
+
+------------------------------------------------------------------------
+
+![](tidy_data_2.jpg)
+
+[©TIDY DATA SERIES BY LOWNDES & HORST By Julia Lowndes and Allison Horst.](https://allisonhorst.com/other-r-fun)
 
 ## Combine Data from Different Resources
 
@@ -180,24 +300,6 @@ data_before_processing |>
 :::
 :::
 
-## Combine Data from Different Resources {.smaller}
-
-::: columns
-::: {.column width="50%"}
--   Import: *Import* data from external sources.
-
--   Tidy: Make the data *Tidy* and ready for analysis.
-
--   Transform: *Transform* the raw data.
-
--   Visualize: *Visualize* the data.
-:::
-
-::: {.column width="50%"}
-![](data-science-workflow.png)
-:::
-:::
-
 ## One Table to Work On {.smaller}
 
 ```{r}
@@ -206,21 +308,7 @@ knitr::kable(data_before_processing)
 
 ```
 
-# Tidy 🧹
-
 ## Long Format to Wide Format
-
-![](tidy_data.png)
-
--   Each Variable is a Column
--   Each Observation is a Raw
--   Each Value is in a Different Cell
-
-# Transform 🐛➡🦋
-
-## Missing Values
-
-## Encoding Categorical Variables
 
 # Visualize 👀
 
@@ -228,25 +316,22 @@ knitr::kable(data_before_processing)
 
 ::: columns
 ::: {.column width="50%"}
-
-#### **Binary Variables 👍👎** 
+#### **Binary Variables 👍👎**
 
 "Yes" or "No". Encoded (mostly) as 1 for Yes and 0 for No.
 
 Current Smoker: 🚬 🚭
 
-#### **Categorical Variables** 
+#### **Categorical Variables**
 
 Place of Birth: {{< iconify flag il-4x3 >}} {{< iconify flag ye-4x3 >}} {{< iconify flag et-4x3 >}}
 
-#### **Continuous Variables** 
+#### **Continuous Variables**
 
 Age: 👧 👩 👵
-
 :::
 
 ::: {.column width="50%"}
-
 ```{r}
 data_before_processing |> 
   dplyr::select(
@@ -254,8 +339,6 @@ data_before_processing |>
   ) |> 
   knitr::kable()
 ```
-
-
 :::
 :::
 
@@ -333,4 +416,10 @@ ggplot(
 
 ```
 
+
+# Transform 🐛➡🦋
+
+## Missing Values
+
 ## Encoding Categorical Variables
+
