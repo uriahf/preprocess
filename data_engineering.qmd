@@ -88,7 +88,6 @@ Pre-Processing is a part of iterative workflow
 
 -   **Visualize:** ***Visualize*** the data 👀
 
-## Typical Workflow
 
 ```{r}
 options(knitr.kable.NA = '')
@@ -220,13 +219,13 @@ tidy_table |>
 
 ------------------------------------------------------------------------
 
-![](tidy_data_1.jpg)
+![](tidy_data1.jpg)
 
 [©TIDY DATA SERIES BY LOWNDES & HORST By Julia Lowndes and Allison Horst.](https://allisonhorst.com/other-r-fun)
 
 ------------------------------------------------------------------------
 
-![](tidy_data_2.jpg)
+![](tidy_data2.jpg)
 
 [©TIDY DATA SERIES BY LOWNDES & HORST By Julia Lowndes and Allison Horst.](https://allisonhorst.com/other-r-fun)
 
@@ -310,34 +309,203 @@ knitr::kable(data_before_processing)
 
 ## Long Format to Wide Format
 
+::: columns
+
+::: {.column width="50%"}
+
+- Sometimes we need to deal with data in a long format.
+
+
+
+:::
+
+::: {.column width="50%"}
+
+```{r}
+options(knitr.kable.NA = '')
+
+data_wide <- tibble::tibble(
+  id = c(rep(1, 3), rep(2, 3)),
+  year = rep(c(2020, 2021, 2022), 2),
+  height = c(1.86, 1.89, 1.88, 
+             1.62, 1.59, 1.6)
+)
+
+data_wide |> 
+  gt::gt()
+
+```
+
+:::
+:::
+
 # Visualize 👀
 
 ## Types of Variables {.smaller}
 
 ::: columns
 ::: {.column width="50%"}
+
+:::
+
+::: {.column width="50%"}
+```{r}
+types_of_vars <- data_before_processing |> 
+  dplyr::select(
+    smoker, pob, age
+  ) |> 
+  gt::gt()
+
+types_of_vars
+```
+:::
+:::
+
+## Types of Variables {.smaller}
+
+::: columns
+::: {.column width="50%"}
+
 #### **Binary Variables 👍👎**
 
-"Yes" or "No". Encoded (mostly) as 1 for Yes and 0 for No.
+"Yes" or "No".
 
 Current Smoker: 🚬 🚭
 
-#### **Categorical Variables**
+:::
+
+::: {.column width="50%"}
+```{r}
+types_of_vars |> 
+  gt::tab_style(
+    style = gt::cell_fill(color = "red"),
+    locations = gt::cells_body(
+      columns = smoker,
+      rows = smoker == "Yes"
+    )
+  ) |> 
+  gt::tab_style(
+    style = gt::cell_fill(color = "white"),
+    locations = gt::cells_body(
+      columns = smoker,
+      rows = smoker == "No"
+    )
+  )
+```
+:::
+:::
+
+## Types of Variables {.smaller}
+
+::: columns
+::: {.column width="50%"}
+
+#### **Binary Variables 👍👎**
+
+"Yes" or "No".
+
+Current Smoker: 🚬 🚭
+
+#### **Nominal (Categorical) Variables**
+
+Categories don't have natural order.
+
+Place of Birth: {{< iconify flag il-4x3 >}} {{< iconify flag ye-4x3 >}} {{< iconify flag et-4x3 >}}
+
+:::
+
+::: {.column width="50%"}
+```{r}
+types_of_vars |> 
+  gt::tab_style(
+    style = gt::cell_fill(color = "lightblue"),
+    locations = gt::cells_body(
+      columns = pob,
+      rows = pob == "IL"
+    )
+  ) |> 
+  gt::tab_style(
+    style = gt::cell_fill(color = "yellow"),
+    locations = gt::cells_body(
+      columns = pob,
+      rows = pob == "ET"
+    )
+  )|> 
+  gt::tab_style(
+    style = gt::cell_fill(color = "pink"),
+    locations = gt::cells_body(
+      columns = pob,
+      rows = pob == "YE"
+    )
+  )
+```
+:::
+:::
+
+## Types of Variables {.smaller}
+
+::: columns
+::: {.column width="50%"}
+
+#### **Binary Variables 👍👎**
+
+"Yes" or "No".
+
+Current Smoker: 🚬 🚭
+
+#### **Nominal (Categorical) Variables**
+
+Categories don't have natural order.
+
+Place of Birth: {{< iconify flag il-4x3 >}} {{< iconify flag ye-4x3 >}} {{< iconify flag et-4x3 >}}
+
+:::
+
+::: {.column width="50%"}
+```{r}
+types_of_vars |> 
+  gt::data_color(
+    columns = age,
+    colors = scales::col_numeric(
+      palette = colorRamp(c("#FFFFFF", "#E88D67"), interpolate="spline"),
+      domain = c(20, 50)
+    )
+  )
+```
+:::
+:::
+
+## Types of Variables {.smaller}
+
+::: columns
+::: {.column width="50%"}
+
+#### **Binary Variables 👍👎**
+
+"Yes" or "No".
+
+Current Smoker: 🚬 🚭
+
+#### **Nominal (Categorical) Variables**
+
+Categories don't have natural order.
 
 Place of Birth: {{< iconify flag il-4x3 >}} {{< iconify flag ye-4x3 >}} {{< iconify flag et-4x3 >}}
 
 #### **Continuous Variables**
+
+A range of values.
 
 Age: 👧 👩 👵
 :::
 
 ::: {.column width="50%"}
 ```{r}
-data_before_processing |> 
+types_of_vars <- data_before_processing |> 
   dplyr::select(
     smoker, pob, age
   ) |> 
-  knitr::kable()
+  gt::gt()
 ```
 :::
 :::
