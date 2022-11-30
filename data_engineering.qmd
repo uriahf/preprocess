@@ -383,14 +383,6 @@ data_before_processing |>
 
 ![](left_join.gif)
 
-## One Table to Work On {.smaller}
-
-```{r}
-
-knitr::kable(data_before_processing)
-
-```
-
 ## Long Format to Wide Format {.smaller}
 
 ::: columns
@@ -610,6 +602,14 @@ tibble::tibble(
   )
 ```
 
+## One Table to Work On {.smaller}
+
+```{r}
+
+knitr::kable(data_before_processing)
+
+```
+
 # Visualize 👀
 
 ## Types of Variables {.smaller}
@@ -752,67 +752,169 @@ types_of_vars |>
 :::
 :::
 
-## Summary Tables (Table 1)
+## Summary Tables 
 
-## Plots
+::: columns
+::: {.column width="50%"}
 
-# Basic Exploration 🔦
+For **Binary** and **Categorical** variables we will use **Proportion**
 
-## Summary Tables (Table 1)
+:::
+
+::: {.column width="50%"}
+
 
 ```{r}
 
 data_before_processing |>
+  dplyr::select(pob) |> 
   gtsummary::tbl_summary(
-    type = list(
-      id ~ "continuous",
-      city ~ "categorical",
-      weight ~ "continuous",
-      height ~ "continuous",
-      age ~ "continuous",
-      cost ~ "continuous",
-      smoker ~ "dichotomous")
-  ) #|>
-  # gtsummary::as_tibble(
-  # )
+    label = pob ~ "Place of Birth"
+  ) |> 
+  gtsummary:: modify_footnote(update = everything() ~ NA)
 
 ```
 
-## 1D Vizualization
-
-::: panel-tabset
-### Continuous - Histogram
-
-```{r}
-library(ggplot2)
-
-ggplot(
-  data_before_processing,
-  aes(x = age)
-) +
-  geom_histogram() +
-  theme_classic()
-
-```
-
-### Discrete - Histogram
-
-```{r}
-library(ggplot2)
-
-ggplot(
-  data_before_processing,
-  aes(x = city)
-) +
-  geom_histogram(stat="count") +
-  theme_classic()
-
-```
+:::
 :::
 
-## 2D Vizualization
+## Summary Tables 
 
-### Continuous and Continuous - Scatter
+::: columns
+::: {.column width="50%"}
+
+For **Binary** variables the proportion of the reference category is implied.
+
+:::
+
+::: {.column width="50%"}
+
+
+```{r}
+
+data_before_processing |>
+  dplyr::select(smoker) |> 
+  gtsummary::tbl_summary(
+    label = smoker ~ "Smoker"
+  ) |> 
+  gtsummary:: modify_footnote(update = everything() ~ NA)
+
+```
+
+:::
+:::
+
+## Summary Tables 
+
+::: columns
+::: {.column width="50%"}
+
+For **Continuous** variables we might use Mean and  the 25th and 75th percentiles.
+
+:::
+
+::: {.column width="50%"}
+
+
+```{r}
+
+data_before_processing |>
+  dplyr::select(age) |> 
+  gtsummary::tbl_summary(
+    type = list(age ~ "continuous"),
+    label = age ~ "Age"
+  )
+
+```
+
+:::
+:::
+
+## Summary Tables 
+
+::: columns
+::: {.column width="50%"}
+
+For **Continuous** variables we might use Median and the 25th and 75th percentiles. We can use other alternatives such as the Mean (Standard Deviation).
+
+:::
+
+::: {.column width="50%"}
+
+
+```{r}
+
+data_before_processing |>
+  dplyr::select(age) |> 
+  gtsummary::tbl_summary(
+    type = list(age ~ "continuous"),
+    statistic = list(gtsummary::all_continuous() ~ "{mean} ({sd})"
+  ))
+
+```
+
+:::
+:::
+
+## Summary Tables 
+
+::: columns
+::: {.column width="50%"}
+
+For **Continuous** variables we might use Median and the 25th and 75th percentiles. We can use other alternatives such as the Mean (Standard Deviation) or the range of the values.
+
+:::
+
+::: {.column width="50%"}
+
+
+```{r}
+
+data_before_processing |>
+  dplyr::select(age) |> 
+  gtsummary::tbl_summary(
+    type = list(age ~ "continuous"),
+    statistic = list(gtsummary::all_continuous() ~ "{min} - {max}"
+  ))
+
+```
+
+:::
+:::
+
+## Plots 1D
+
+In order to display distribution we will use **Histogram**.
+
+
+```{r}
+library(ggplot2)
+
+ggplot(data_before_processing, aes(x=age)) + 
+  geom_histogram(color="black", fill="white", binwidth = 5) +
+  theme_classic()+ theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))
+```
+
+
+## Plots 1D
+
+
+In order to display distribution we will use **Histogram**.
+
+
+```{r}
+library(ggplot2)
+
+ggplot(data_before_processing, aes(x=pob)) + 
+  geom_histogram(color="black", fill="white", stat="count") +
+  theme_classic()+ theme(panel.border = element_blank(), panel.grid.major = element_blank(),
+panel.grid.minor = element_blank(), axis.line = element_line(colour = "black"))
+```
+
+## Plots 2D
+
+In order to display relationship between continuous variables we will use **Scatter Plot**.
 
 ```{r}
 library(ggplot2)
@@ -829,7 +931,132 @@ ggplot(
 
 # Transform 🐛➡🦋
 
-## Missing Values
+## Encoding Categorical Variables
+
+::: columns
+::: {.column width="50%"}
+
+**Binary Variables** will be encoded to 1 (yes) and 0 (no)
+
+:::
+
+::: {.column width="50%"}
+
+```{r}
+data_before_processing  |> 
+  dplyr::select(id, smoker) |>
+  gt::gt()
+
+```
+
+:::
+:::
 
 ## Encoding Categorical Variables
 
+::: columns
+::: {.column width="50%"}
+
+**Binary Variables** will be encoded to 1 (yes) and 0 (no)
+
+:::
+
+::: {.column width="50%"}
+
+```{r}
+data_before_processing |> 
+  dplyr::mutate(smoker = ifelse(smoker == "Yes", 1, 0)) |> 
+  dplyr::select(id, smoker) |> 
+  gt::gt()
+
+
+```
+
+:::
+:::
+
+## Encoding Categorical Variables
+
+::: columns
+::: {.column width="50%"}
+
+**Nominal Variables** will be encoded to n-1 new "dummy" variables, the reference group is implied.
+
+:::
+
+::: {.column width="50%"}
+
+```{r}
+data_before_processing |> dplyr::select(id, pob) |> 
+  gt::gt()
+
+
+```
+
+:::
+:::
+
+## Encoding Categorical Variables
+
+::: columns
+::: {.column width="50%"}
+
+**Nominal Variables** will be encoded to n-1 new "dummy" variables, the reference group is implied.
+
+:::
+
+::: {.column width="50%"}
+
+```{r}
+data_before_processing |> 
+  dplyr::mutate(ET = ifelse(pob == "ET", 1, 0)) |> 
+  dplyr::mutate(YE = ifelse(pob == "YE", 1, 0)) |> 
+  dplyr::select(id, YE, ET) |> 
+  gt::gt()
+
+
+```
+
+:::
+:::
+
+## Missing Values
+
+::: columns
+::: {.column width="50%"}
+
+Under the assumption of Missing Values at Random, one might consider just ignore the observation.
+
+:::
+
+::: {.column width="50%"}
+```{r}
+
+data_before_processing |>
+  dplyr::select(id, height, weight) |> 
+  gt::gt()
+```
+
+:::
+:::
+
+## Missing Values
+
+::: columns
+::: {.column width="50%"}
+
+Under the assumption of Missing Values at Random, one might consider just ignore the observation, but many times values are not missing at random.
+
+:::
+
+::: {.column width="50%"}
+```{r}
+data_before_processing |>
+  dplyr::select(id, immigrated) |> 
+  gt::gt()
+```
+
+:::
+:::
+
+# 👋
