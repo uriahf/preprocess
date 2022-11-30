@@ -1,0 +1,4 @@
+- source: data_engineering.qmd
+  netlify:
+    - id: 985fad40-132a-4c97-95d4-859ae0c9d9c1
+      url: 'https://delicate-pastelito-71269d.netlify.app'
